@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Edl_Lab_10</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+
+<style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    h2,
+    h3 {
+      margin: 10px;
+      font-size: 1.2em;
+    }
+    h3 {
+      font-size: 1em;
+    }
+    p {
+      font-size: 0.85em;
+      margin: 10px;
+      text-align: left;
+    }
+    .map-overlay {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.8);
+      margin-right: 20px;
+      font-family: Arial, sans-serif;
+      overflow: auto;
+      border-radius: 3px;
+    }
+    #map {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+    }
+    #features {
+      top: 0;
+      height: 100px;
+      margin-top: 20px;
+      width: 250px;
+    }
+    #legend {
+      padding: 10px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      line-height: 18px;
+      height: 300px;
+      margin-bottom: 40px;
+      width: 200px;
+    }
+    .legend-key {
+      display: inline-block;
+      border-radius: 20%;
+      width: 10px;
+      height: 10px;
+      margin-right: 5px;
+    }</style>
+</head>
+<body>
+  <div id="map"></div>
+  <div class="map-overlay" id="features">
+    <h2>Building footprint map</h2>
+    <div id="pd"><p>Mouse over a building to see information about its land use.</p></div>
+  </div>
+  <div class="map-overlay" id="legend"></div><script></script>
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZXRqYW0iLCJhIjoiY2xvN3F5b2NiMDdnbDJtbzNrZm84MTFyYSJ9.ZTrBgi6Yek6OWQ_MmaEJgg'; 
+
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/etjam/clp1o4so200r901nw4phkg2js',
+        zoom: 10,
+        center: [-75.150996, 39.992945]
+      });
+
+    const popup = new mapboxgl.Popup({
+      closeButton: false,
+      closeOnClick: false
+    });
+
+    map.on('mouseenter', 'buildings', (e) => {
+      map.getCanvas().style.cursor = 'default';
+      popup.setLngLat(e.lngLat)
+      .setHTML(e.features[0].properties.landuse)
+      .addTo(map);
+    });
+
+    map.on('mouseleave', 'buildings', () => {
+      map.getCanvas().style.cursor = '';
+      popup.remove();
+    });
+
+    var layers = ['Residential Low', 'Residential Medium', 'Residential High', 'Commercial Consumer', 'Commercial Business/Professional','Commercial Mixed Residential','Industrial','Civic/Institution','Transportation','Culture/Amusement','Active Recreation','Park/Open Space','Water','Vacant'];
+    var colors = ['#ffffcc', '#f5ff12', '#f5ff12', '#e60000', '#a80000', '#e89579', '#8c00ff', '#0070ff', '#cccccc', '#00ffe6', '#9bccb3', '#63cc00', '#51e8ff', '#a87000'];
+    
+    for (i = 0; i < layers.length; i++) {
+        var layer = layers[i];
+        var color = colors[i];
+        var item = document.createElement('div');
+        var key = document.createElement('span');
+        key.className = 'legend-key';
+        key.style.backgroundColor = color;
+      
+    var value = document.createElement('span');
+        value.innerHTML = layer;
+        item.appendChild(key);
+        item.appendChild(value);
+        legend.appendChild(item);
+        }
+  
+</script>
+</body>
+</html>
